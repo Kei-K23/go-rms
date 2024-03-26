@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     `password` VARCHAR(255) NOT NULL,
     `address` VARCHAR(255) NOT NULL,
     `phone` VARCHAR(255) NOT NULL,
+    `access_key` VARCHAR(255) NOT NULL UNIQUE,
 
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

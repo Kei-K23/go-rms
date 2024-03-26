@@ -31,3 +31,7 @@ func (s *Store) VerifyPassword(hPassword, password string) error {
 
 	return nil
 }
+
+// func  ()  {
+
+// }

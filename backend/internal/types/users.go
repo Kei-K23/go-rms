@@ -2,6 +2,7 @@ package types
 
 type UserStore interface {
 	CreateUser(user RegisterUser) (*RegisterUser, error)
+	GetUserByEmail(user LoginUser) (*User, error)
 }
 
 type User struct {
@@ -11,5 +12,6 @@ type User struct {
 	Password  string `json:"password"`
 	Address   string `json:"address"`
 	Phone     string `json:"phone"`
+	AccessKey string `json:"access_key"`
 	CreatedAt string `json:"created_at"`
 }
