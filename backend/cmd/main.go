@@ -10,8 +10,6 @@ import (
 
 func main() {
 
-	ser := api.NewAPIServer(":4000", nil)
-
 	sqlDB, err := db.NewDB(config.Env.DB_CONNECTION_STRING)
 
 	if err != nil {
@@ -19,6 +17,8 @@ func main() {
 	}
 
 	db.InitDB(sqlDB)
+
+	ser := api.NewAPIServer(":4000", sqlDB)
 
 	ser.Run()
 }
