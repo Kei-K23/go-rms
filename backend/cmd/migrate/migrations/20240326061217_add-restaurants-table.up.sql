@@ -6,6 +6,8 @@ CREATE TABLE IF NOT EXISTS restaurants (
     `open_hours` TIMESTAMP NOT NULL,
     `close_hours` TIMESTAMP NOT NULL,
     `cuisine_type` VARCHAR(255) NOT NULL,
+    `access_token` VARCHAR(255) NOT NULL,
+    `user_id` INT NOT NULL,
     `capacity` INT,
 
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

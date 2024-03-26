@@ -18,3 +18,5 @@ func (h *Handler) RegisterRoute(router fiber.Router) {
 		return c.SendString("I'm a GET request for staff!")
 	})
 }
+
+// handler

@@ -16,7 +16,7 @@ func initEnv() Config {
 	godotenv.Load()
 
 	return Config{
-		DB_CONNECTION_STRING: getEnv("DB_CONNECTION_STRING", "dbeaver:dbeaver@127.0.0.1:3306)/go-rms?multiStatements=true"),
+		DB_CONNECTION_STRING: getEnv("DB_CONNECTION_STRING", "dbeaver:dbeaver@(127.0.0.1:3306)/go-rms?multiStatements=true"),
 	}
 }
 
