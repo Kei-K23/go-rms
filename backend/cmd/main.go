@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import "github.com/Kei-K23/go-rms/backend/cmd/api"
 
 func main() {
-	fmt.Println("Hello, World!")
+
+	ser := api.NewAPIServer(":4000", nil)
+
+	ser.Run()
 }
