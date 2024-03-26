@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/Kei-K23/go-rms/backend/internal/service/auth"
 	"github.com/Kei-K23/go-rms/backend/internal/service/staff"
+	"github.com/Kei-K23/go-rms/backend/internal/service/users"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
@@ -16,9 +18,10 @@ type APIServer struct {
 }
 
 func (s *APIServer) Run() {
+
 	app := fiber.New()
 
-	// logger middleware
+	// global middleware
 	app.Use(requestid.New())
 	app.Use(logger.New(logger.Config{
 		Format: "${pid} ${locals:requestid} ${status} - ${method} ${path}​\n",
@@ -27,11 +30,20 @@ func (s *APIServer) Run() {
 	api := app.Group("/api")
 	v1 := api.Group("/v1")
 
+	// stores service
 	staffStore := staff.NewStore(s.db)
+	userStore := users.NewStore(s.db)
+	authStore := auth.NewStore(s.db)
 
+	// handlers
 	staffHandler := staff.NewHandler(staffStore)
+	authHandler := auth.NewHandler(userStore, authStore)
 
+	// register routes
 	staffHandler.RegisterRoute(v1)
+	authHandler.RegisterRoute(v1)
+
+	// server
 	log.Fatal(app.Listen(s.addr))
 }
 

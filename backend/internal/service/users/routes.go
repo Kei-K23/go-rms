@@ -1,17 +1,16 @@
 package users
 
 import (
-	"database/sql"
-
+	"github.com/Kei-K23/go-rms/backend/internal/types"
 	"github.com/gofiber/fiber/v2"
 )
 
 type Handler struct {
-	db *sql.DB
+	store types.UserStore
 }
 
-func NewHandler(db *sql.DB) *Handler {
-	return &Handler{db: db}
+func NewHandler(store types.UserStore) *Handler {
+	return &Handler{store: store}
 }
 
 func (h *Handler) RegisterRoute(router fiber.Router) {
