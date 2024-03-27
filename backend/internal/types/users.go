@@ -4,6 +4,7 @@ type UserStore interface {
 	CreateUser(user RegisterUser) (*RegisterUser, error)
 	GetUserByEmail(user LoginUser) (*User, error)
 	GetUserById(uID int) (*User, error)
+	UpdateUser(user UpdateUser, uID int) (*User, error)
 }
 
 type User struct {
@@ -15,4 +16,10 @@ type User struct {
 	Phone     string `json:"phone"`
 	AccessKey string `json:"access_key"`
 	CreatedAt string `json:"created_at"`
+}
+
+type UpdateUser struct {
+	Name    string `json:"name" validate="required"`
+	Address string `json:"address" validate="required"`
+	Phone   string `json:"phone" validate="required"`
 }

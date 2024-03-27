@@ -65,3 +65,26 @@ func (s *Store) GetUserById(uID int) (*types.User, error) {
 
 	return &u, nil
 }
+
+func (s *Store) UpdateUser(user types.UpdateUser, uID int) (*types.User, error) {
+	var u *types.User
+
+	stmt, err := s.db.Prepare("UPDATE users SET name = ?, address = ?, phone = ? WHERE id = ?")
+	if err != nil {
+		return nil, err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(user.Name, user.Address, user.Phone, uID)
+	if err != nil {
+		return nil, err
+	}
+
+	u, err = s.GetUserById(uID)
+	if err != nil {
+		return nil, err
+	}
+
+	return u, nil
+}
