@@ -2,6 +2,7 @@ package users
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/Kei-K23/go-rms/backend/internal/types"
 )
@@ -87,4 +88,23 @@ func (s *Store) UpdateUser(user types.UpdateUser, uID int) (*types.User, error) 
 	}
 
 	return u, nil
+}
+
+func (s *Store) DeleteUser(uID int) (*types.HTTPGeneralRes, error) {
+	stmt, err := s.db.Prepare("DELETE FROM users WHERE id = ?")
+	if err != nil {
+		return nil, err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(uID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.HTTPGeneralRes{
+		Success: true,
+		Message: fmt.Sprintf("User with ID : %v deleted successfully", uID),
+	}, nil
 }

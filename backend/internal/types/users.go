@@ -5,6 +5,7 @@ type UserStore interface {
 	GetUserByEmail(user LoginUser) (*User, error)
 	GetUserById(uID int) (*User, error)
 	UpdateUser(user UpdateUser, uID int) (*User, error)
+	DeleteUser(uID int) (*HTTPGeneralRes, error)
 }
 
 type User struct {

@@ -19,6 +19,7 @@ func NewHandler(store types.UserStore) *Handler {
 
 func (h *Handler) RegisterRoute(router fiber.Router) {
 	router.Get("/users", h.getUser)
+	router.Delete("/users", h.DeleteUser)
 	router.Put("/users", h.UpdatUser)
 }
 
@@ -67,4 +68,15 @@ func (h *Handler) UpdatUser(c *fiber.Ctx) error {
 		"access_key": u.AccessKey,
 		"created_at": u.CreatedAt,
 	})
+}
+
+func (h *Handler) DeleteUser(c *fiber.Ctx) error {
+	uID := c.Context().UserValue(middleware.ClaimsContextKey).(int)
+
+	res, err := h.store.DeleteUser(uID)
+	if err != nil {
+		return utils.WriteError(c, http.StatusUnauthorized, err)
+	}
+
+	return utils.WriteJSON(c, http.StatusOK, res)
 }
