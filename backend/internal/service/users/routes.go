@@ -18,5 +18,5 @@ func (h *Handler) RegisterRoute(router fiber.Router) {
 }
 
 func (h *Handler) getUser(c *fiber.Ctx) error {
-	return nil
+	return c.SendString("Hello I am users")
 }
