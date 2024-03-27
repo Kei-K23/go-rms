@@ -36,14 +36,14 @@ func (s *Store) GetUserByEmail(user types.LoginUser) (*types.User, error) {
 
 	stmt, err := s.db.Prepare("SELECT * FROM users WHERE email =?")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("something went wrong")
 	}
 
 	defer stmt.Close()
 
 	err = stmt.QueryRow(user.Email).Scan(&u.ID, &u.Name, &u.Email, &u.Password, &u.Address, &u.Phone, &u.AccessKey, &u.CreatedAt)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("user could not found")
 	}
 
 	return &u, nil
@@ -68,6 +68,11 @@ func (s *Store) GetUserById(uID int) (*types.User, error) {
 }
 
 func (s *Store) UpdateUser(user types.UpdateUser, uID int) (*types.User, error) {
+	_, err := s.GetUserById(uID)
+	if err != nil {
+		return nil, err
+	}
+
 	var u *types.User
 
 	stmt, err := s.db.Prepare("UPDATE users SET name = ?, address = ?, phone = ? WHERE id = ?")
@@ -91,6 +96,11 @@ func (s *Store) UpdateUser(user types.UpdateUser, uID int) (*types.User, error) 
 }
 
 func (s *Store) DeleteUser(uID int) (*types.HTTPGeneralRes, error) {
+	_, err := s.GetUserById(uID)
+	if err != nil {
+		return nil, err
+	}
+
 	stmt, err := s.db.Prepare("DELETE FROM users WHERE id = ?")
 	if err != nil {
 		return nil, err

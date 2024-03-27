@@ -9,8 +9,7 @@ CREATE TABLE IF NOT EXISTS restaurants (
     `access_token` VARCHAR(255) NOT NULL,
     `user_id` INT NOT NULL,
     `capacity` INT,
-
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    PRIMARY KEY (`id`)
-)
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+);
