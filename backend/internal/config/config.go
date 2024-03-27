@@ -8,6 +8,7 @@ import (
 
 type Config struct {
 	DB_CONNECTION_STRING string
+	SECRET_KEY           string
 }
 
 var Env Config = initEnv()
@@ -17,6 +18,7 @@ func initEnv() Config {
 
 	return Config{
 		DB_CONNECTION_STRING: getEnv("DB_CONNECTION_STRING", "dbeaver:dbeaver@(127.0.0.1:3306)/go-rms?multiStatements=true"),
+		SECRET_KEY:           getEnv("SECRET_KEY", "this-is-secret-key"),
 	}
 }
 

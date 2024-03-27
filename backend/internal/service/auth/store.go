@@ -2,10 +2,17 @@ package auth
 
 import (
 	"database/sql"
+	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
+type JWTClaim struct {
+	UserID  int
+	Expires int64
+	jwt.RegisteredClaims
+}
 type Store struct {
 	db *sql.DB
 }
@@ -32,6 +39,16 @@ func (s *Store) VerifyPassword(hPassword, password string) error {
 	return nil
 }
 
-// func  ()  {
+func (s *Store) CreateJWT(secret []byte, userID int) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, JWTClaim{
+		UserID:  userID,
+		Expires: int64(time.Second * time.Duration(3600*24*7)),
+	})
 
-// }
+	t, err := token.SignedString(secret)
+
+	if err != nil {
+		return "", err
+	}
+	return t, nil
+}

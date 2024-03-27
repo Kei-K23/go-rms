@@ -3,6 +3,7 @@ package types
 type AuthStore interface {
 	HashedPassword(password string) (string, error)
 	VerifyPassword(hPassword, password string) error
+	CreateJWT(secret []byte, userID int) (string, error)
 }
 
 type RegisterUser struct {

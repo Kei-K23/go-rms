@@ -1,8 +1,11 @@
 package auth
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 
+	"github.com/Kei-K23/go-rms/backend/internal/config"
 	"github.com/Kei-K23/go-rms/backend/internal/types"
 	"github.com/Kei-K23/go-rms/backend/internal/utils"
 	"github.com/gofiber/fiber/v2"
@@ -35,7 +38,6 @@ func (h *Handler) registerUser(c *fiber.Ctx) error {
 		return utils.WriteError(c, http.StatusBadRequest, err)
 	}
 	hashedPassword, err := h.aStore.HashedPassword(payload.Password)
-
 	if err != nil {
 		return utils.WriteError(c, http.StatusInternalServerError, err)
 	}
@@ -48,7 +50,6 @@ func (h *Handler) registerUser(c *fiber.Ctx) error {
 		Phone:     payload.Phone,
 		AccessKey: payload.AccessKey,
 	})
-
 	if err != nil {
 		return utils.WriteError(c, http.StatusInternalServerError, err)
 	}
@@ -73,24 +74,26 @@ func (h *Handler) loginUser(c *fiber.Ctx) error {
 	}
 
 	u, err := h.uStore.GetUserByEmail(payload)
-
 	if err != nil {
-		return utils.WriteError(c, http.StatusInternalServerError, err)
+		return utils.WriteError(c, http.StatusInternalServerError, fmt.Errorf("cannot find the user"))
 	}
 
 	err = h.aStore.VerifyPassword(u.Password, payload.Password)
-
 	if err != nil {
 		return utils.WriteError(c, http.StatusInternalServerError, err)
 	}
 
+	uID, err := strconv.Atoi(u.ID)
+	if err != nil {
+		return utils.WriteError(c, http.StatusInternalServerError, err)
+	}
+
+	accessKey, err := h.aStore.CreateJWT([]byte(config.Env.SECRET_KEY), uID)
+	if err != nil {
+		return err
+	}
+
 	return utils.WriteJSON(c, http.StatusCreated, map[string]string{
-		"id":         u.ID,
-		"name":       u.Name,
-		"email":      u.Email,
-		"phone":      u.Phone,
-		"address":    u.Address,
-		"access_key": u.AccessKey,
-		"created_at": u.CreatedAt,
+		"access_key": accessKey,
 	})
 }
