@@ -28,10 +28,6 @@ func (s *APIServer) Run() {
 
 	api := app.Group("/api")
 	v1 := api.Group("/v1")
-	protectedRoute := v1.Group("")
-	// protedted route with auth middleware
-	protectedRoute.Use(middleware.AuthMiddleware)
-
 	// stores service
 	staffStore := staff.NewStore(s.db)
 	userStore := users.NewStore(s.db)
@@ -44,6 +40,11 @@ func (s *APIServer) Run() {
 	// register routes
 	staffHandler.RegisterRoute(v1)
 	authHandler.RegisterRoute(v1)
+
+	protectedRoute := v1.Group("")
+	// protedted route with auth middleware
+	protectedRoute.Use(middleware.AuthMiddleware)
+
 	userHandler.RegisterRoute(protectedRoute)
 
 	// server

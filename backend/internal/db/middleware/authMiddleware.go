@@ -57,6 +57,6 @@ func AuthMiddleware(c *fiber.Ctx) error {
 			Message: "authorization header is missing",
 		}
 	}
-	c.Context().SetUserValue(ClaimsContextKey, claims)
+	c.Context().SetUserValue(ClaimsContextKey, claims.UserID)
 	return c.Next()
 }

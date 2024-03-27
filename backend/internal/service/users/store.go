@@ -47,3 +47,21 @@ func (s *Store) GetUserByEmail(user types.LoginUser) (*types.User, error) {
 
 	return &u, nil
 }
+
+func (s *Store) GetUserById(uID int) (*types.User, error) {
+	var u types.User
+
+	stmt, err := s.db.Prepare("SELECT * FROM users WHERE id =?")
+	if err != nil {
+		return nil, err
+	}
+
+	defer stmt.Close()
+
+	err = stmt.QueryRow(uID).Scan(&u.ID, &u.Name, &u.Email, &u.Password, &u.Address, &u.Phone, &u.AccessKey, &u.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+
+	return &u, nil
+}

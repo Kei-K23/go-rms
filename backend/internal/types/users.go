@@ -3,6 +3,7 @@ package types
 type UserStore interface {
 	CreateUser(user RegisterUser) (*RegisterUser, error)
 	GetUserByEmail(user LoginUser) (*User, error)
+	GetUserById(uID int) (*User, error)
 }
 
 type User struct {
