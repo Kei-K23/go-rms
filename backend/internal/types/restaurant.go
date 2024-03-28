@@ -2,6 +2,7 @@ package types
 
 type RestaurantStore interface {
 	CreateRestaurant(r CreateRestaurant) (*Restaurant, error)
+	GetRestaurantByID(rID int, accessToken string) (*Restaurant, error)
 	DeleteRestaurant(rID int, accessToken string) (*HTTPGeneralRes, error)
 	UpdateRestaurant(r UpdateRestaurant, rAccessToken string, rID int) (*Restaurant, error)
 }

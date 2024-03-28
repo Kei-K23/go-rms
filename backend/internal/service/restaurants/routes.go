@@ -20,12 +20,9 @@ func NewHandler(rStore types.RestaurantStore, uStore types.UserStore) *Handler {
 }
 
 func (h *Handler) RegisterRoute(router fiber.Router) {
-	router.Get("/restaurants", func(c *fiber.Ctx) error {
-		return c.SendString("I'm a GET request for restaurants!")
-	})
-
 	router.Post("/restaurants", h.createRestaurant)
 	router.Put("/restaurants/:id", h.updateRestaurant)
+	router.Get("/restaurants/:id", h.deleteRestaurant)
 	router.Delete("/restaurants/:id", h.deleteRestaurant)
 }
 
@@ -77,6 +74,28 @@ func (h *Handler) updateRestaurant(c *fiber.Ctx) error {
 	}
 
 	r, err := h.rStore.UpdateRestaurant(payload, u.AccessKey, intRID)
+	if err != nil {
+		return utils.WriteError(c, http.StatusInternalServerError, err)
+	}
+
+	return utils.WriteJSON(c, http.StatusOK, r)
+}
+
+func (h *Handler) getRestaurantByID(c *fiber.Ctx) error {
+	uID := c.Context().UserValue(middleware.ClaimsContextKey).(int)
+	rID := c.Params("id")
+
+	intRID, err := strconv.Atoi(rID)
+	if err != nil {
+		return utils.WriteError(c, http.StatusInternalServerError, err)
+	}
+
+	u, err := h.uStore.GetUserById(uID)
+	if err != nil {
+		return utils.WriteError(c, http.StatusInternalServerError, err)
+	}
+
+	r, err := h.rStore.GetRestaurantByID(intRID, u.AccessKey)
 	if err != nil {
 		return utils.WriteError(c, http.StatusInternalServerError, err)
 	}
