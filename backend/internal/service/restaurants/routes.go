@@ -2,6 +2,7 @@ package restaurants
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/Kei-K23/go-rms/backend/internal/db/middleware"
 	"github.com/Kei-K23/go-rms/backend/internal/types"
@@ -24,6 +25,7 @@ func (h *Handler) RegisterRoute(router fiber.Router) {
 	})
 
 	router.Post("/restaurants", h.createRestaurant)
+	router.Put("/restaurants/:id", h.updateRestaurant)
 }
 
 func (h *Handler) createRestaurant(c *fiber.Ctx) error {
@@ -49,4 +51,34 @@ func (h *Handler) createRestaurant(c *fiber.Ctx) error {
 	}
 
 	return utils.WriteJSON(c, http.StatusCreated, r)
+}
+
+func (h *Handler) updateRestaurant(c *fiber.Ctx) error {
+	var payload types.UpdateRestaurant
+	uID := c.Context().UserValue(middleware.ClaimsContextKey).(int)
+	rID := c.Params("id")
+
+	intRID, err := strconv.Atoi(rID)
+	if err != nil {
+		return utils.WriteError(c, http.StatusInternalServerError, err)
+	}
+
+	if err := utils.ParseJson(c, &payload); err != nil {
+		return utils.WriteError(c, http.StatusInternalServerError, err)
+	}
+
+	if err := utils.ValidatePayload(payload); err != nil {
+		return utils.WriteError(c, http.StatusBadRequest, err)
+	}
+	u, err := h.uStore.GetUserById(uID)
+	if err != nil {
+		return utils.WriteError(c, http.StatusInternalServerError, err)
+	}
+
+	r, err := h.rStore.UpdateRestaurant(payload, u.AccessKey, intRID)
+	if err != nil {
+		return utils.WriteError(c, http.StatusInternalServerError, err)
+	}
+
+	return utils.WriteJSON(c, http.StatusOK, r)
 }

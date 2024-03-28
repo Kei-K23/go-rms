@@ -2,6 +2,8 @@ package types
 
 type RestaurantStore interface {
 	CreateRestaurant(r CreateRestaurant) (*Restaurant, error)
+	DeleteRestaurant(rID int, accessToken string) (*HTTPGeneralRes, error)
+	UpdateRestaurant(r UpdateRestaurant, rAccessToken string, rID int) (*Restaurant, error)
 }
 
 type Restaurant struct {
@@ -27,5 +29,15 @@ type CreateRestaurant struct {
 	CuisineType string `json:"cuisine_type" validate="required"`
 	AccessToken string `json:"access_token" validate="required"`
 	UserID      int    `json:"user_id" validate="required"`
+	Capacity    int    `json:"capacity" validate="required"`
+}
+
+type UpdateRestaurant struct {
+	Name        string `json:"name" validate="required"`
+	Address     string `json:"address" validate="required"`
+	Phone       string `json:"phone" validate="required"`
+	OpenHours   string `json:"open_hours" validate="required"`
+	CloseHours  string `json:"close_hours" validate="required"`
+	CuisineType string `json:"cuisine_type" validate="required"`
 	Capacity    int    `json:"capacity" validate="required"`
 }
