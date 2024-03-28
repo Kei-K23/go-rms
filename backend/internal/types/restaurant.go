@@ -1,6 +1,8 @@
 package types
 
-type RestaurantStore interface{}
+type RestaurantStore interface {
+	CreateRestaurant(r CreateRestaurant) (*Restaurant, error)
+}
 
 type Restaurant struct {
 	ID          int    `json:id`

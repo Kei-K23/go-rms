@@ -6,6 +6,7 @@ import (
 
 	"github.com/Kei-K23/go-rms/backend/internal/db/middleware"
 	"github.com/Kei-K23/go-rms/backend/internal/service/auth"
+	"github.com/Kei-K23/go-rms/backend/internal/service/restaurants"
 	"github.com/Kei-K23/go-rms/backend/internal/service/staff"
 	"github.com/Kei-K23/go-rms/backend/internal/service/users"
 	"github.com/gofiber/fiber/v2"
@@ -32,11 +33,13 @@ func (s *APIServer) Run() {
 	staffStore := staff.NewStore(s.db)
 	userStore := users.NewStore(s.db)
 	authStore := auth.NewStore(s.db)
-
+	restStore := restaurants.NewStore(s.db)
 	// handlers
 	staffHandler := staff.NewHandler(staffStore)
 	authHandler := auth.NewHandler(userStore, authStore)
 	userHandler := users.NewHandler(userStore)
+	restHandler := restaurants.NewHandler(restStore, userStore)
+
 	// register routes
 	staffHandler.RegisterRoute(v1)
 	authHandler.RegisterRoute(v1)
@@ -46,7 +49,7 @@ func (s *APIServer) Run() {
 	protectedRoute.Use(middleware.AuthMiddleware)
 
 	userHandler.RegisterRoute(protectedRoute)
-
+	restHandler.RegisterRoute(protectedRoute)
 	// server
 	log.Fatal(app.Listen(s.addr))
 }

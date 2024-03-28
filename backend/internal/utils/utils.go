@@ -26,7 +26,7 @@ func WriteJSON(c *fiber.Ctx, status int, payload any) error {
 }
 
 func ValidatePayload(payload any) error {
-	var validate = validator.New()
+	validate := validator.New()
 	if err := validate.Struct(payload); err != nil {
 		return err.(validator.ValidationErrors)
 	}

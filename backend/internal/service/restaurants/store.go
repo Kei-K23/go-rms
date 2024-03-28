@@ -27,11 +27,10 @@ func (s *Store) GetRestaurantByID(rID int, accessToken string) (*types.Restauran
 		&restaurant.Name, &restaurant.Address,
 		&restaurant.Phone, &restaurant.OpenHours,
 		&restaurant.CloseHours, &restaurant.CuisineType,
-		&restaurant.AccessToken, &restaurant.UserID, &restaurant.Capacity)
+		&restaurant.AccessToken, &restaurant.UserID, &restaurant.Capacity, &restaurant.CreatedAt)
 	if err != nil {
 		return nil, fmt.Errorf("no restaurant found")
 	}
-
 	return &restaurant, nil
 }
 
@@ -55,7 +54,7 @@ func (s *Store) CreateRestaurant(r types.CreateRestaurant) (*types.Restaurant, e
 
 	createdR, err := s.GetRestaurantByID(int(rId), r.AccessToken)
 	if err != nil {
-		return nil, fmt.Errorf("internal server error")
+		return nil, err
 	}
 
 	return createdR, nil
