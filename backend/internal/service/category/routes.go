@@ -1,6 +1,7 @@
 package category
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Kei-K23/go-rms/backend/internal/types"
@@ -19,6 +20,7 @@ func NewHandler(store types.CategoryStore) *Handler {
 func (h *Handler) RegisterRoute(router fiber.Router) {
 	router.Get("/categories", h.getAllCategory)
 	router.Get("/categories/:id", h.getCategoryByID)
+	router.Put("/categories/:id", h.updateCategory)
 	router.Post("/categories", h.createCategory)
 }
 
@@ -38,6 +40,30 @@ func (h *Handler) getCategoryByID(c *fiber.Ctx) error {
 	}
 
 	ct, err := h.store.GetCategoryByID(id)
+	if err != nil {
+		return utils.WriteError(c, http.StatusInternalServerError,
+			fmt.Errorf("can't get category with id %d", id))
+	}
+
+	return utils.WriteJSON(c, http.StatusCreated, ct)
+}
+
+func (h *Handler) updateCategory(c *fiber.Ctx) error {
+	var payload types.UpdateCategory
+	if err := utils.ParseJson(c, &payload); err != nil {
+		return err
+	}
+
+	if err := utils.ValidatePayload(payload); err != nil {
+		return utils.WriteError(c, http.StatusBadRequest, err)
+	}
+
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return utils.WriteError(c, http.StatusBadRequest, err)
+	}
+
+	ct, err := h.store.UpdateCategory(payload, id)
 	if err != nil {
 		return utils.WriteError(c, http.StatusInternalServerError, err)
 	}
