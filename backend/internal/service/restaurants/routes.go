@@ -22,8 +22,8 @@ func NewHandler(rStore types.RestaurantStore, uStore types.UserStore) *Handler {
 func (h *Handler) RegisterRoute(router fiber.Router) {
 	router.Post("/restaurants", h.createRestaurant)
 	router.Put("/restaurants/:id", h.updateRestaurant)
-	router.Get("/restaurants/:id", h.deleteRestaurant)
 	router.Delete("/restaurants/:id", h.deleteRestaurant)
+	router.Get("/restaurants/:id", h.getRestaurantByID)
 }
 
 func (h *Handler) createRestaurant(c *fiber.Ctx) error {
