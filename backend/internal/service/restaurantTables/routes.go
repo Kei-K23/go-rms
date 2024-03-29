@@ -57,7 +57,7 @@ func (h *Handler) createRestaurantTable(c *fiber.Ctx) error {
 	var payload types.CreateRestaurantTable
 	rID := c.Params("id")
 	if err := utils.ParseJson(c, &payload); err != nil {
-		return err
+		return utils.WriteError(c, http.StatusBadRequest, err)
 	}
 
 	if err := utils.ValidatePayload(payload); err != nil {
@@ -80,7 +80,7 @@ func (h *Handler) createRestaurantTable(c *fiber.Ctx) error {
 func (h *Handler) updateRestaurantTable(c *fiber.Ctx) error {
 	var payload types.UpdateRestaurantTable
 	if err := utils.ParseJson(c, &payload); err != nil {
-		return err
+		return utils.WriteError(c, http.StatusBadRequest, err)
 	}
 
 	if err := utils.ValidatePayload(payload); err != nil {

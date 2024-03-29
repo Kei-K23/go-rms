@@ -31,7 +31,7 @@ func (h *Handler) createRestaurant(c *fiber.Ctx) error {
 	uID := c.Context().UserValue(middleware.ClaimsContextKey).(int)
 
 	if err := utils.ParseJson(c, &payload); err != nil {
-		return err
+		return utils.WriteError(c, http.StatusBadRequest, err)
 	}
 
 	if err := utils.ValidatePayload(payload); err != nil {

@@ -47,7 +47,7 @@ func (h *Handler) UpdatUser(c *fiber.Ctx) error {
 	var payload types.UpdateUser
 
 	if err := utils.ParseJson(c, &payload); err != nil {
-		return err
+		return utils.WriteError(c, http.StatusBadRequest, err)
 	}
 
 	if err := utils.ValidatePayload(payload); err != nil {

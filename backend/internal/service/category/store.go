@@ -46,7 +46,7 @@ func (s *Store) GetCategories() (*[]types.Category, error) {
 		err := result.Scan(&category.ID, &category.Name, &category.Description, &category.CreatedAt)
 		if err != nil {
 			fmt.Println(err)
-			return nil, fmt.Errorf("internal server error when reading from restaurantTable")
+			return nil, fmt.Errorf("internal server error when reading from categories table")
 		}
 		categories = append(categories, category)
 	}

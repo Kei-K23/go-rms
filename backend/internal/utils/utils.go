@@ -11,10 +11,10 @@ func ParseJson(c *fiber.Ctx, payload any) error {
 	if len(c.Body()) <= 0 {
 		return fmt.Errorf("body payload is missing")
 	}
+
 	if err := c.BodyParser(&payload); err != nil {
 		return fmt.Errorf("error when parsing payload")
 	}
-
 	return nil
 }
 

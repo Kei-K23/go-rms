@@ -16,11 +16,11 @@ type Category struct {
 }
 
 type CreateCategory struct {
-	Name        string `json:name`
+	Name        string `json:name validate="required"`
 	Description string `json:description`
 }
 
 type UpdateCategory struct {
-	Name        string `json:name`
+	Name        string `json:name validate="required"`
 	Description string `json:description`
 }

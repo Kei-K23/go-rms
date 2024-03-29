@@ -7,6 +7,7 @@ import (
 	"github.com/Kei-K23/go-rms/backend/internal/db/middleware"
 	"github.com/Kei-K23/go-rms/backend/internal/service/auth"
 	"github.com/Kei-K23/go-rms/backend/internal/service/category"
+	"github.com/Kei-K23/go-rms/backend/internal/service/menus"
 	"github.com/Kei-K23/go-rms/backend/internal/service/restaurantTables"
 	"github.com/Kei-K23/go-rms/backend/internal/service/restaurants"
 	"github.com/Kei-K23/go-rms/backend/internal/service/staff"
@@ -38,6 +39,7 @@ func (s *APIServer) Run() {
 	restStore := restaurants.NewStore(s.db)
 	restTStore := restaurantTables.NewStore(s.db)
 	categoryStore := category.NewStore(s.db)
+	menuStore := menus.NewStore(s.db)
 	// handlers
 	staffHandler := staff.NewHandler(staffStore)
 	authHandler := auth.NewHandler(userStore, authStore)
@@ -45,6 +47,7 @@ func (s *APIServer) Run() {
 	restHandler := restaurants.NewHandler(restStore, userStore)
 	restTHandler := restaurantTables.NewHandler(restTStore)
 	categoryHandler := category.NewHandler(categoryStore)
+	menuHandler := menus.NewHandler(menuStore)
 	// register routes
 	staffHandler.RegisterRoute(v1)
 	authHandler.RegisterRoute(v1)
@@ -57,6 +60,7 @@ func (s *APIServer) Run() {
 	restHandler.RegisterRoute(protectedRoute)
 	restTHandler.RegisterRoute(protectedRoute)
 	categoryHandler.RegisterRoute(protectedRoute)
+	menuHandler.RegisterRoute(protectedRoute)
 	// server
 	log.Fatal(app.Listen(s.addr))
 }

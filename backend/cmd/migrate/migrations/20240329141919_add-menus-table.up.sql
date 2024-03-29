@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `menus` (
     id INT NOT NULL AUTO_INCREMENT,
-    name INT NOT NULL,
+    name VARCHAR(255) NOT NULL,
     description TEXT,
     available BOOLEAN NOT NULL DEFAULT TRUE,
     category_id INT NOT NULL,

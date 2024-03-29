@@ -66,7 +66,7 @@ func (h *Handler) deleteCategory(c *fiber.Ctx) error {
 func (h *Handler) updateCategory(c *fiber.Ctx) error {
 	var payload types.UpdateCategory
 	if err := utils.ParseJson(c, &payload); err != nil {
-		return err
+		return utils.WriteError(c, http.StatusBadRequest, err)
 	}
 
 	if err := utils.ValidatePayload(payload); err != nil {
@@ -89,7 +89,7 @@ func (h *Handler) updateCategory(c *fiber.Ctx) error {
 func (h *Handler) createCategory(c *fiber.Ctx) error {
 	var payload types.CreateCategory
 	if err := utils.ParseJson(c, &payload); err != nil {
-		return err
+		return utils.WriteError(c, http.StatusBadRequest, err)
 	}
 
 	if err := utils.ValidatePayload(payload); err != nil {
