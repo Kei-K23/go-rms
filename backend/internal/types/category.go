@@ -2,6 +2,7 @@ package types
 
 type CategoryStore interface {
 	CreateCategory(ct CreateCategory) (*Category, error)
+	GetCategories() (*[]Category, error)
 }
 
 type Category struct {

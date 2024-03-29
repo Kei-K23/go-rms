@@ -17,7 +17,17 @@ func NewHandler(store types.CategoryStore) *Handler {
 }
 
 func (h *Handler) RegisterRoute(router fiber.Router) {
+	router.Get("/categories", h.getAllCategory)
 	router.Post("/categories", h.createCategory)
+}
+
+func (h *Handler) getAllCategory(c *fiber.Ctx) error {
+	categories, err := h.store.GetCategories()
+	if err != nil {
+		return utils.WriteError(c, http.StatusInternalServerError, err)
+	}
+
+	return utils.WriteJSON(c, http.StatusOK, categories)
 }
 
 func (h *Handler) createCategory(c *fiber.Ctx) error {
