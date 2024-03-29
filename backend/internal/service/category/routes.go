@@ -21,6 +21,7 @@ func (h *Handler) RegisterRoute(router fiber.Router) {
 	router.Get("/categories", h.getAllCategory)
 	router.Get("/categories/:id", h.getCategoryByID)
 	router.Put("/categories/:id", h.updateCategory)
+	router.Delete("/categories/:id", h.deleteCategory)
 	router.Post("/categories", h.createCategory)
 }
 
@@ -45,7 +46,21 @@ func (h *Handler) getCategoryByID(c *fiber.Ctx) error {
 			fmt.Errorf("can't get category with id %d", id))
 	}
 
-	return utils.WriteJSON(c, http.StatusCreated, ct)
+	return utils.WriteJSON(c, http.StatusOK, ct)
+}
+
+func (h *Handler) deleteCategory(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return utils.WriteError(c, http.StatusBadRequest, err)
+	}
+
+	res, err := h.store.DeleteCategory(id)
+	if err != nil {
+		return utils.WriteError(c, http.StatusInternalServerError, err)
+	}
+
+	return utils.WriteJSON(c, http.StatusOK, res)
 }
 
 func (h *Handler) updateCategory(c *fiber.Ctx) error {
@@ -68,7 +83,7 @@ func (h *Handler) updateCategory(c *fiber.Ctx) error {
 		return utils.WriteError(c, http.StatusInternalServerError, err)
 	}
 
-	return utils.WriteJSON(c, http.StatusCreated, ct)
+	return utils.WriteJSON(c, http.StatusOK, ct)
 }
 
 func (h *Handler) createCategory(c *fiber.Ctx) error {

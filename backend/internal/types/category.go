@@ -5,6 +5,7 @@ type CategoryStore interface {
 	GetCategories() (*[]Category, error)
 	GetCategoryByID(id int) (*Category, error)
 	UpdateCategory(ct UpdateCategory, id int) (*Category, error)
+	DeleteCategory(id int) (*HTTPGeneralRes, error)
 }
 
 type Category struct {

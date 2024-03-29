@@ -125,5 +125,5 @@ func (s *Store) DeleteCategory(id int) (*types.HTTPGeneralRes, error) {
 		return nil, err
 	}
 
-	return &types.HTTPGeneralRes{Success: true, Message: "Deleted menu with ID: " + fmt.Sprintf("%d", id)}, nil
+	return &types.HTTPGeneralRes{Success: true, Message: "Deleted category with ID: " + fmt.Sprintf("%d", id)}, nil
 }
