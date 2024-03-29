@@ -62,7 +62,7 @@ func (h *Handler) updateRestaurant(c *fiber.Ctx) error {
 	}
 
 	if err := utils.ParseJson(c, &payload); err != nil {
-		return utils.WriteError(c, http.StatusInternalServerError, err)
+		return utils.WriteError(c, http.StatusBadRequest, err)
 	}
 
 	if err := utils.ValidatePayload(payload); err != nil {

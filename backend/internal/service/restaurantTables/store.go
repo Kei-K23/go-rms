@@ -88,7 +88,6 @@ func (s *Store) CreateRestaurantTable(rT types.CreateRestaurantTable) (*types.Re
 func (s *Store) UpdateRestaurantTable(rT types.UpdateRestaurantTable, rID, rTID int) (*types.RestaurantTable, error) {
 	stmt, err := s.db.Prepare("UPDATE restaurant_tables SET status = ?, capacity = ? WHERE id = ? AND restaurant_id = ?")
 	if err != nil {
-		fmt.Println(err)
 		return nil, fmt.Errorf("internal server error")
 	}
 
@@ -106,4 +105,25 @@ func (s *Store) UpdateRestaurantTable(rT types.UpdateRestaurantTable, rID, rTID 
 	}
 
 	return updatedRT, nil
+}
+
+func (s *Store) DeleteRestaurantTable(rID, rTID int) (*types.HTTPGeneralRes, error) {
+	_, err := s.GetRestaurantTableByID(rTID, rID)
+	if err != nil {
+		return nil, err
+	}
+
+	stmt, err := s.db.Prepare("DELETE FROM restaurant_tables WHERE id = ? AND restaurant_id = ?")
+	if err != nil {
+		return nil, err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(rTID, rID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.HTTPGeneralRes{Success: true, Message: "Deleted restaurant table with ID: " + fmt.Sprintf("%d", rTID)}, nil
 }

@@ -5,6 +5,7 @@ type RestaurantTablesStore interface {
 	CreateRestaurantTable(rT CreateRestaurantTable) (*RestaurantTable, error)
 	GetRestaurantTableByID(rTID, rID int) (*RestaurantTable, error)
 	UpdateRestaurantTable(rT UpdateRestaurantTable, rID, rTID int) (*RestaurantTable, error)
+	DeleteRestaurantTable(rID, rTID int) (*HTTPGeneralRes, error)
 }
 
 type Status string

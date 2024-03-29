@@ -21,6 +21,7 @@ func (h *Handler) RegisterRoute(router fiber.Router) {
 	router.Get("/restaurants/:id/tables", h.getTablesByRestaurant)
 	router.Get("/restaurants/:id/tables/:tid", h.getTablesByRestaurantID)
 	router.Put("/restaurants/:id/tables/:tid", h.updateRestaurantTable)
+	router.Delete("/restaurants/:id/tables/:tid", h.deleteRestaurantTable)
 	router.Post("/restaurants/:id/tables", h.createRestaurantTable)
 }
 
@@ -31,9 +32,9 @@ func (h *Handler) getTablesByRestaurant(c *fiber.Ctx) error {
 	}
 	rTables, err := h.rTStore.GetRestaurantTables(rID)
 	if err != nil {
-		return utils.WriteError(c, http.StatusBadRequest, err)
+		return utils.WriteError(c, http.StatusInternalServerError, err)
 	}
-	return utils.WriteJSON(c, http.StatusCreated, rTables)
+	return utils.WriteJSON(c, http.StatusOK, rTables)
 }
 
 func (h *Handler) getTablesByRestaurantID(c *fiber.Ctx) error {
@@ -47,9 +48,9 @@ func (h *Handler) getTablesByRestaurantID(c *fiber.Ctx) error {
 	}
 	rTables, err := h.rTStore.GetRestaurantTableByID(rTID, rID)
 	if err != nil {
-		return utils.WriteError(c, http.StatusBadRequest, err)
+		return utils.WriteError(c, http.StatusInternalServerError, err)
 	}
-	return utils.WriteJSON(c, http.StatusCreated, rTables)
+	return utils.WriteJSON(c, http.StatusOK, rTables)
 }
 
 func (h *Handler) createRestaurantTable(c *fiber.Ctx) error {
@@ -71,7 +72,7 @@ func (h *Handler) createRestaurantTable(c *fiber.Ctx) error {
 	payload.RestaurantID = intRID
 	rT, err := h.rTStore.CreateRestaurantTable(payload)
 	if err != nil {
-		return utils.WriteError(c, http.StatusBadRequest, err)
+		return utils.WriteError(c, http.StatusInternalServerError, err)
 	}
 	return utils.WriteJSON(c, http.StatusCreated, rT)
 }
@@ -96,7 +97,23 @@ func (h *Handler) updateRestaurantTable(c *fiber.Ctx) error {
 	}
 	rTables, err := h.rTStore.UpdateRestaurantTable(payload, rID, rTID)
 	if err != nil {
+		return utils.WriteError(c, http.StatusInternalServerError, err)
+	}
+	return utils.WriteJSON(c, http.StatusOK, rTables)
+}
+
+func (h *Handler) deleteRestaurantTable(c *fiber.Ctx) error {
+	rID, err := c.ParamsInt("id")
+	if err != nil {
 		return utils.WriteError(c, http.StatusBadRequest, err)
 	}
-	return utils.WriteJSON(c, http.StatusCreated, rTables)
+	rTID, err := c.ParamsInt("tid")
+	if err != nil {
+		return utils.WriteError(c, http.StatusBadRequest, err)
+	}
+	res, err := h.rTStore.DeleteRestaurantTable(rID, rTID)
+	if err != nil {
+		return utils.WriteError(c, http.StatusInternalServerError, err)
+	}
+	return utils.WriteJSON(c, http.StatusOK, res)
 }

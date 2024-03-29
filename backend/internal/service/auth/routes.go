@@ -93,7 +93,7 @@ func (h *Handler) loginUser(c *fiber.Ctx) error {
 		return err
 	}
 
-	return utils.WriteJSON(c, http.StatusCreated, map[string]string{
+	return utils.WriteJSON(c, http.StatusOK, map[string]string{
 		"access_key": accessKey,
 	})
 }
