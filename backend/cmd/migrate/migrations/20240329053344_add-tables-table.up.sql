@@ -6,5 +6,6 @@ CREATE TABLE IF NOT EXISTS `restaurant_tables` (
     restaurant_id INT NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    FOREIGN KEY (`restaurant_id`) REFERENCES `restaurants`(`id`) ON DELETE CASCADE
+    FOREIGN KEY (`restaurant_id`) REFERENCES `restaurants`(`id`) ON DELETE CASCADE,
+    UNIQUE KEY `unique_table_number_per_restaurant` (`table_number`, `restaurant_id`)
 )
