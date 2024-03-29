@@ -23,7 +23,15 @@ func (h *Handler) RegisterRoute(router fiber.Router) {
 }
 
 func (h *Handler) GetTablesByRestaurant(c *fiber.Ctx) error {
-	return c.SendString("This is tables by restaurant")
+	rID, err := c.ParamsInt("id")
+	if err != nil {
+		return utils.WriteError(c, http.StatusBadRequest, err)
+	}
+	rTables, err := h.rTStore.GetRestaurantTables(rID)
+	if err != nil {
+		return utils.WriteError(c, http.StatusBadRequest, err)
+	}
+	return utils.WriteJSON(c, http.StatusCreated, rTables)
 }
 
 func (h *Handler) createRestaurantTable(c *fiber.Ctx) error {

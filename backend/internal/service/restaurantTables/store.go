@@ -31,6 +31,34 @@ func (s *Store) GetRestaurantTableByID(rTID int) (*types.RestaurantTable, error)
 	return &restaurantTable, nil
 }
 
+func (s *Store) GetRestaurantTables(rID int) (*[]types.RestaurantTable, error) {
+	var restaurantTables []types.RestaurantTable
+
+	stmt, err := s.db.Prepare("SELECT * FROM restaurant_tables WHERE restaurant_id = ?")
+	if err != nil {
+		return nil, fmt.Errorf("internal server error")
+	}
+
+	result, err := stmt.Query(rID)
+
+	for result.Next() {
+		var restaurantTable types.RestaurantTable
+		err := result.Scan(&restaurantTable.ID, &restaurantTable.TableNumber, &restaurantTable.Capacity, &restaurantTable.Status, &restaurantTable.RestaurantID, &restaurantTable.CreatedAt)
+		if err != nil {
+			fmt.Println(err)
+			return nil, fmt.Errorf("internal server error when reading from restaurantTable")
+		}
+		restaurantTables = append(restaurantTables, restaurantTable)
+	}
+
+	if err != nil {
+		fmt.Println(err)
+		return nil, fmt.Errorf("no restaurant table found")
+	}
+
+	return &restaurantTables, nil
+}
+
 func (s *Store) CreateRestaurantTable(rT types.CreateRestaurantTable) (*types.RestaurantTable, error) {
 	stmt, err := s.db.Prepare("INSERT INTO restaurant_tables (table_number, status, capacity, restaurant_id) VALUES (?,?,?,?)")
 	if err != nil {

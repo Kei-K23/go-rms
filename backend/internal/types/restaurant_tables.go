@@ -1,6 +1,7 @@
 package types
 
 type RestaurantTablesStore interface {
+	GetRestaurantTables(rID int) (*[]RestaurantTable, error)
 	CreateRestaurantTable(rT CreateRestaurantTable) (*RestaurantTable, error)
 }
 
