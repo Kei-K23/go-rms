@@ -18,6 +18,7 @@ func NewHandler(store types.CategoryStore) *Handler {
 
 func (h *Handler) RegisterRoute(router fiber.Router) {
 	router.Get("/categories", h.getAllCategory)
+	router.Get("/categories/:id", h.getCategoryByID)
 	router.Post("/categories", h.createCategory)
 }
 
@@ -28,6 +29,20 @@ func (h *Handler) getAllCategory(c *fiber.Ctx) error {
 	}
 
 	return utils.WriteJSON(c, http.StatusOK, categories)
+}
+
+func (h *Handler) getCategoryByID(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return utils.WriteError(c, http.StatusBadRequest, err)
+	}
+
+	ct, err := h.store.GetCategoryByID(id)
+	if err != nil {
+		return utils.WriteError(c, http.StatusInternalServerError, err)
+	}
+
+	return utils.WriteJSON(c, http.StatusCreated, ct)
 }
 
 func (h *Handler) createCategory(c *fiber.Ctx) error {
