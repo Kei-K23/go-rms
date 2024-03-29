@@ -15,15 +15,15 @@ func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
 }
 
-func (s *Store) GetRestaurantTableByID(rTID int) (*types.RestaurantTable, error) {
+func (s *Store) GetRestaurantTableByID(rTID, rID int) (*types.RestaurantTable, error) {
 	var restaurantTable types.RestaurantTable
 
-	stmt, err := s.db.Prepare("SELECT * FROM restaurant_tables WHERE id = ?")
+	stmt, err := s.db.Prepare("SELECT * FROM restaurant_tables WHERE id = ? AND restaurant_id = ?")
 	if err != nil {
 		return nil, fmt.Errorf("internal server error")
 	}
 
-	err = stmt.QueryRow(rTID).Scan(&restaurantTable.ID, &restaurantTable.TableNumber, &restaurantTable.Capacity, &restaurantTable.Status, &restaurantTable.RestaurantID, &restaurantTable.CreatedAt)
+	err = stmt.QueryRow(rTID, rID).Scan(&restaurantTable.ID, &restaurantTable.TableNumber, &restaurantTable.Capacity, &restaurantTable.Status, &restaurantTable.RestaurantID, &restaurantTable.CreatedAt)
 	if err != nil {
 		fmt.Println(err)
 		return nil, fmt.Errorf("no restaurant table found")
@@ -77,10 +77,33 @@ func (s *Store) CreateRestaurantTable(rT types.CreateRestaurantTable) (*types.Re
 		return nil, fmt.Errorf("internal server error")
 	}
 
-	createdRTable, err := s.GetRestaurantTableByID(int(rTId))
+	createdRTable, err := s.GetRestaurantTableByID(int(rTId), rT.RestaurantID)
 	if err != nil {
 		return nil, err
 	}
 
 	return createdRTable, nil
+}
+
+func (s *Store) UpdateRestaurantTable(rT types.UpdateRestaurantTable, rID, rTID int) (*types.RestaurantTable, error) {
+	stmt, err := s.db.Prepare("UPDATE restaurant_tables SET status = ?, capacity = ? WHERE id = ? AND restaurant_id = ?")
+	if err != nil {
+		fmt.Println(err)
+		return nil, fmt.Errorf("internal server error")
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(rT.Status, rT.Capacity, rTID, rID)
+	if err != nil {
+		fmt.Println(err)
+		return nil, fmt.Errorf("internal server error")
+	}
+
+	updatedRT, err := s.GetRestaurantTableByID(rTID, rID)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedRT, nil
 }

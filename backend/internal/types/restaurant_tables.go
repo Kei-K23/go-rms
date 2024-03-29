@@ -3,6 +3,8 @@ package types
 type RestaurantTablesStore interface {
 	GetRestaurantTables(rID int) (*[]RestaurantTable, error)
 	CreateRestaurantTable(rT CreateRestaurantTable) (*RestaurantTable, error)
+	GetRestaurantTableByID(rTID, rID int) (*RestaurantTable, error)
+	UpdateRestaurantTable(rT UpdateRestaurantTable, rID, rTID int) (*RestaurantTable, error)
 }
 
 type Status string
@@ -29,7 +31,6 @@ type CreateRestaurantTable struct {
 }
 
 type UpdateRestaurantTable struct {
-	TableNumber int    `json:"table_number" validate:"required"`
-	Status      Status `json:"status" validate:"required,oneof=occupied vacant"`
-	Capacity    int    `json:"capacity" validate:"required"`
+	Status   Status `json:"status" validate:"required,oneof=occupied vacant damage"`
+	Capacity int    `json:"capacity" validate:"required"`
 }
