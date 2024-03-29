@@ -9,18 +9,18 @@ type CategoryStore interface {
 }
 
 type Category struct {
-	ID          int    `json:id`
-	Name        string `json:name`
-	Description string `json:description`
+	ID          int    `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
 	CreatedAt   string `json:"created_at"`
 }
 
 type CreateCategory struct {
-	Name        string `json:name validate="required"`
-	Description string `json:description`
+	Name        string `json:"name" validate:"required"`
+	Description string `json:"description"`
 }
 
 type UpdateCategory struct {
-	Name        string `json:name validate="required"`
-	Description string `json:description`
+	Name        string `json:"name" validate:"required"`
+	Description string `json:"description"`
 }

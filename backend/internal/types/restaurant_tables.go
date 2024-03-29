@@ -16,7 +16,7 @@ const (
 )
 
 type RestaurantTable struct {
-	ID           int    `json:id`
+	ID           int    `json:"id"`
 	TableNumber  int    `json:"table_number"`
 	Status       Status `json:"status"`
 	Capacity     int    `json:"capacity"`

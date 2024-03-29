@@ -22,23 +22,23 @@ type Restaurant struct {
 }
 
 type CreateRestaurant struct {
-	Name        string `json:"name" validate="required"`
-	Address     string `json:"address" validate="required"`
-	Phone       string `json:"phone" validate="required"`
-	OpenHours   string `json:"open_hours" validate="required"`
-	CloseHours  string `json:"close_hours" validate="required"`
-	CuisineType string `json:"cuisine_type" validate="required"`
-	AccessToken string `json:"access_token" validate="required"`
-	UserID      int    `json:"user_id" validate="required"`
-	Capacity    int    `json:"capacity" validate="required"`
+	Name        string `json:"name" validate:"required"`
+	Address     string `json:"address" validate:"required"`
+	Phone       string `json:"phone" validate:"required"`
+	OpenHours   string `json:"open_hours" validate:"required"`
+	CloseHours  string `json:"close_hours" validate:"required"`
+	CuisineType string `json:"cuisine_type" validate:"required"`
+	AccessToken string `json:"access_token" validate:"required"`
+	UserID      int    `json:"user_id" validate:"required"`
+	Capacity    int    `json:"capacity" validate:"required"`
 }
 
 type UpdateRestaurant struct {
-	Name        string `json:"name" validate="required"`
-	Address     string `json:"address" validate="required"`
-	Phone       string `json:"phone" validate="required"`
-	OpenHours   string `json:"open_hours" validate="required"`
-	CloseHours  string `json:"close_hours" validate="required"`
-	CuisineType string `json:"cuisine_type" validate="required"`
-	Capacity    int    `json:"capacity" validate="required"`
+	Name        string `json:"name" validate:"required"`
+	Address     string `json:"address" validate:"required"`
+	Phone       string `json:"phone" validate:"required"`
+	OpenHours   string `json:"open_hours" validate:"required"`
+	CloseHours  string `json:"close_hours" validate:"required"`
+	CuisineType string `json:"cuisine_type" validate:"required"`
+	Capacity    int    `json:"capacity" validate:"required"`
 }
