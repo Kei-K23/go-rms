@@ -42,7 +42,6 @@ func (s *Store) CreateOrder(order types.CreateOrder, orderItems []types.CreateOr
 
 	result, err := stmt.Exec(order.TableNumber, order.TotalPrice, order.TotalQuantity, order.RestaurantId, order.OrderStatus)
 	if err != nil {
-		fmt.Println(err)
 		return nil, fmt.Errorf("internal server error")
 	}
 
@@ -60,10 +59,30 @@ func (s *Store) CreateOrder(order types.CreateOrder, orderItems []types.CreateOr
 		oi.OrderID = createdOrder.ID
 		_, err := s.oiStore.CreateOrderItem(oi)
 		if err != nil {
-			fmt.Println(err)
 			return nil, fmt.Errorf("internal server error")
 		}
 	}
 
 	return createdOrder, nil
+}
+
+func (s *Store) DeleteOrder(oID, rID int) (*types.HTTPGeneralRes, error) {
+	_, err := s.GetOrderByID(oID)
+	if err != nil {
+		return nil, err
+	}
+
+	stmt, err := s.db.Prepare("DELETE FROM orders WHERE id = ? AND restaurant_id = ?")
+	if err != nil {
+		return nil, err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(oID, rID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.HTTPGeneralRes{Success: true, Message: "Deleted order with ID: " + fmt.Sprintf("%d", oID)}, nil
 }

@@ -23,6 +23,7 @@ func NewHandler(s types.OrderStore) *Handler {
 
 func (h *Handler) RegisterRoute(router fiber.Router) {
 	router.Post("/restaurants/:restaurantId/orders", h.createOrder)
+	router.Delete("/restaurants/:restaurantId/orders/:orderId", h.deleteOrder)
 }
 
 //
@@ -42,4 +43,20 @@ func (h *Handler) createOrder(c *fiber.Ctx) error {
 		return utils.WriteError(c, http.StatusInternalServerError, err)
 	}
 	return utils.WriteJSON(c, http.StatusCreated, order)
+}
+
+func (h *Handler) deleteOrder(c *fiber.Ctx) error {
+	rID, err := c.ParamsInt("restaurantId")
+	if err != nil {
+		return utils.WriteError(c, http.StatusBadRequest, err)
+	}
+	oID, err := c.ParamsInt("orderId")
+	if err != nil {
+		return utils.WriteError(c, http.StatusBadRequest, err)
+	}
+	res, err := h.store.DeleteOrder(oID, rID)
+	if err != nil {
+		return utils.WriteError(c, http.StatusInternalServerError, err)
+	}
+	return utils.WriteJSON(c, http.StatusCreated, res)
 }

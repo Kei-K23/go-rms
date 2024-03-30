@@ -2,6 +2,7 @@ package types
 
 type OrderStore interface {
 	CreateOrder(order CreateOrder, orderItems []CreateOrderItem) (*Order, error)
+	DeleteOrder(oID, rID int) (*HTTPGeneralRes, error)
 }
 
 type OrderStatus string
