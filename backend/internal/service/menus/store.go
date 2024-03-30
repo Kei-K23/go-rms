@@ -84,3 +84,25 @@ func (s *Store) CreateMenu(m types.CreateMenu, rID int) (*types.Menu, error) {
 
 	return createdRTable, nil
 }
+
+func (s *Store) UpdateMenu(menu types.UpdateMenu, mID, rID int) (*types.Menu, error) {
+	stmt, err := s.db.Prepare("UPDATE menus SET name = ?, description = ?, available = ?, category_id = ?, price = ? WHERE id = ? AND restaurant_id = ?")
+	if err != nil {
+		return nil, fmt.Errorf("internal server error")
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(menu.Name, menu.Description, menu.Available, menu.CategoryID, menu.Price, mID, rID)
+	if err != nil {
+		fmt.Println(err)
+		return nil, fmt.Errorf("internal server error")
+	}
+
+	updatedMenu, err := s.GetMenuByID(mID, rID)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedMenu, nil
+}

@@ -3,6 +3,7 @@ package types
 type MenuStore interface {
 	CreateMenu(m CreateMenu, rID int) (*Menu, error)
 	GetMenuByID(mID, rID int) (*Menu, error)
+	UpdateMenu(menu UpdateMenu, mID, rID int) (*Menu, error)
 	GetAllMenuByRestaurantID(rID int) (*[]Menu, error)
 }
 
