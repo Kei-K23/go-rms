@@ -134,7 +134,7 @@ func (s *Store) UpdateOrderStatus(id int, status string) error {
 }
 
 func (s *Store) UpdateOrder(oID, price, quantity int) error {
-	order, err := s.GetOrderByID(oID)
+	order, err := s.getOrderByID(oID)
 	if err != nil {
 		return err
 	}
@@ -151,7 +151,7 @@ func (s *Store) UpdateOrder(oID, price, quantity int) error {
 	return nil
 }
 
-func (s *Store) GetOrderByID(id int) (*types.Order, error) {
+func (s *Store) getOrderByID(id int) (*types.Order, error) {
 	var order types.Order
 
 	stmt, err := s.db.Prepare("SELECT * FROM orders WHERE id = ?")
