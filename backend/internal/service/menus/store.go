@@ -106,3 +106,24 @@ func (s *Store) UpdateMenu(menu types.UpdateMenu, mID, rID int) (*types.Menu, er
 
 	return updatedMenu, nil
 }
+
+func (s *Store) DeleteMenu(mID, rID int) (*types.HTTPGeneralRes, error) {
+	_, err := s.GetMenuByID(mID, rID)
+	if err != nil {
+		return nil, err
+	}
+
+	stmt, err := s.db.Prepare("DELETE FROM menus WHERE id = ? AND restaurant_id = ?")
+	if err != nil {
+		return nil, err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(mID, rID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.HTTPGeneralRes{Success: true, Message: "Deleted menu with ID: " + fmt.Sprintf("%d", mID)}, nil
+}

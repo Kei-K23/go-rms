@@ -5,6 +5,7 @@ type MenuStore interface {
 	GetMenuByID(mID, rID int) (*Menu, error)
 	UpdateMenu(menu UpdateMenu, mID, rID int) (*Menu, error)
 	GetAllMenuByRestaurantID(rID int) (*[]Menu, error)
+	DeleteMenu(mID, rID int) (*HTTPGeneralRes, error)
 }
 
 type Menu struct {
