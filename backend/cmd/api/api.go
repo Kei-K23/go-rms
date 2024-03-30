@@ -53,6 +53,7 @@ func (s *APIServer) Run() {
 	categoryHandler := category.NewHandler(categoryStore)
 	menuHandler := menus.NewHandler(menuStore)
 	orderHandler := orders.NewHandler(orderStore)
+	orderItemHandler := orderitem.NewHandler(orderItemStore)
 	// register routes
 	staffHandler.RegisterRoute(v1)
 	authHandler.RegisterRoute(v1)
@@ -67,6 +68,7 @@ func (s *APIServer) Run() {
 	categoryHandler.RegisterRoute(protectedRoute)
 	menuHandler.RegisterRoute(protectedRoute)
 	orderHandler.RegisterRoute(protectedRoute)
+	orderItemHandler.RegisterRoute(protectedRoute)
 
 	// server
 	log.Fatal(app.Listen(s.addr))

@@ -2,6 +2,10 @@ package types
 
 type OrderItemStore interface {
 	CreateOrderItem(orderItem CreateOrderItem) (*OrderItem, error)
+	ChangeOrderItemStatus(id int) (*HTTPGeneralRes, error)
+	UpdateOrderStatus(id int, status string) error
+	UpdateOrder(oID, price, quantity int) error
+	GetOrderByID(id int) (*Order, error)
 }
 
 type OrderItem struct {

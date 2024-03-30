@@ -86,3 +86,30 @@ func (s *Store) DeleteOrder(oID, rID int) (*types.HTTPGeneralRes, error) {
 
 	return &types.HTTPGeneralRes{Success: true, Message: "Deleted order with ID: " + fmt.Sprintf("%d", oID)}, nil
 }
+
+// change order status
+func (s *Store) ChangeOrderStatus(id int) (*types.HTTPGeneralRes, error) {
+	order, err := s.GetOrderByID(id)
+	if err != nil {
+		return nil, fmt.Errorf("no order item found")
+	}
+
+	var orderS types.OrderStatus
+
+	stmt, err := s.db.Prepare("UPDATE orders SET order_status = ? WHERE id = ?")
+	if err != nil {
+		return nil, fmt.Errorf("internal server error")
+	}
+
+	if order.OrderStatus == "pending" {
+		orderS = "completed"
+	} else {
+		orderS = "pending"
+	}
+
+	_, err = stmt.Exec(orderS, id)
+	if err != nil {
+		return nil, fmt.Errorf("no order found")
+	}
+	return &types.HTTPGeneralRes{Message: "order status updated successfully", Success: true}, nil
+}
