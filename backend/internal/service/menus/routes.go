@@ -17,6 +17,7 @@ func NewHandler(store types.MenuStore) *Handler {
 }
 
 func (h *Handler) RegisterRoute(router fiber.Router) {
+	router.Get("/restaurants/:restaurantId/menus", h.getMenusByRestaurantID)
 	router.Post("/restaurants/:restaurantId/menus", h.createMenu)
 	router.Get("/restaurants/:restaurantId/menus/:menuId", h.getMenuByID)
 }
@@ -56,4 +57,17 @@ func (h *Handler) getMenuByID(c *fiber.Ctx) error {
 		return utils.WriteError(c, http.StatusInternalServerError, err)
 	}
 	return utils.WriteJSON(c, http.StatusOK, m)
+}
+
+func (h *Handler) getMenusByRestaurantID(c *fiber.Ctx) error {
+	restaurantID, err := c.ParamsInt("restaurantId")
+	if err != nil {
+		return utils.WriteError(c, http.StatusBadRequest, err)
+	}
+	menus, err := h.store.GetAllMenuByRestaurantID(restaurantID)
+	if err != nil {
+		return utils.WriteError(c, http.StatusInternalServerError, err)
+	}
+
+	return utils.WriteJSON(c, http.StatusOK, menus)
 }
