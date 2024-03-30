@@ -15,7 +15,7 @@ func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
 }
 
-func (s *Store) GetMenuByRestaurantID(rID int) (*[]types.Menu, error) {
+func (s *Store) GetAllMenuByRestaurantID(rID int) (*[]types.Menu, error) {
 	var menus []types.Menu
 
 	stmt, err := s.db.Prepare("SELECT * FROM menus WHERE restaurant_id = ?")
@@ -43,15 +43,15 @@ func (s *Store) GetMenuByRestaurantID(rID int) (*[]types.Menu, error) {
 	return &menus, nil
 }
 
-func (s *Store) GetMenuByID(id int) (*types.Menu, error) {
+func (s *Store) GetMenuByID(mID, rID int) (*types.Menu, error) {
 	var menu types.Menu
 
-	stmt, err := s.db.Prepare("SELECT * FROM menus WHERE id = ?")
+	stmt, err := s.db.Prepare("SELECT * FROM menus WHERE id = ? AND restaurant_id = ?")
 	if err != nil {
 		return nil, fmt.Errorf("internal server error")
 	}
 
-	err = stmt.QueryRow(id).Scan(&menu.ID, &menu.Name, &menu.Description, &menu.Available, &menu.CategoryID, &menu.RestaurantID, &menu.Price, &menu.CreatedAt)
+	err = stmt.QueryRow(mID, rID).Scan(&menu.ID, &menu.Name, &menu.Description, &menu.Available, &menu.CategoryID, &menu.RestaurantID, &menu.Price, &menu.CreatedAt)
 	if err != nil {
 		fmt.Println(err)
 		return nil, fmt.Errorf("no menu found")
@@ -77,7 +77,7 @@ func (s *Store) CreateMenu(m types.CreateMenu, rID int) (*types.Menu, error) {
 		return nil, fmt.Errorf("internal server error")
 	}
 
-	createdRTable, err := s.GetMenuByID(int(mID))
+	createdRTable, err := s.GetMenuByID(int(mID), rID)
 	if err != nil {
 		return nil, err
 	}

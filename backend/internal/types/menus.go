@@ -2,8 +2,8 @@ package types
 
 type MenuStore interface {
 	CreateMenu(m CreateMenu, rID int) (*Menu, error)
-	GetMenuByID(id int) (*Menu, error)
-	GetMenuByRestaurantID(rID int) (*[]Menu, error)
+	GetMenuByID(mID, rID int) (*Menu, error)
+	GetAllMenuByRestaurantID(rID int) (*[]Menu, error)
 }
 
 type Menu struct {

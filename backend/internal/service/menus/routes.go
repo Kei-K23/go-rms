@@ -1,7 +1,6 @@
 package menus
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/Kei-K23/go-rms/backend/internal/types"
@@ -19,6 +18,7 @@ func NewHandler(store types.MenuStore) *Handler {
 
 func (h *Handler) RegisterRoute(router fiber.Router) {
 	router.Post("/restaurants/:restaurantId/menus", h.createMenu)
+	router.Get("/restaurants/:restaurantId/menus/:menuId", h.getMenuByID)
 }
 
 func (h *Handler) createMenu(c *fiber.Ctx) error {
@@ -34,11 +34,26 @@ func (h *Handler) createMenu(c *fiber.Ctx) error {
 		return utils.WriteError(c, http.StatusBadRequest, err)
 	}
 
-	fmt.Println(payload)
-
 	m, err := h.store.CreateMenu(payload, rID)
 	if err != nil {
 		return utils.WriteError(c, http.StatusBadRequest, err)
 	}
 	return utils.WriteJSON(c, http.StatusCreated, m)
+}
+
+func (h *Handler) getMenuByID(c *fiber.Ctx) error {
+	restaurantID, err := c.ParamsInt("restaurantId")
+	if err != nil {
+		return utils.WriteError(c, http.StatusBadRequest, err)
+	}
+
+	menuID, err := c.ParamsInt("menuId")
+	if err != nil {
+		return utils.WriteError(c, http.StatusBadRequest, err)
+	}
+	m, err := h.store.GetMenuByID(menuID, restaurantID)
+	if err != nil {
+		return utils.WriteError(c, http.StatusInternalServerError, err)
+	}
+	return utils.WriteJSON(c, http.StatusOK, m)
 }
