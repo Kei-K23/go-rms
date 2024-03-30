@@ -5,6 +5,7 @@ type OrderItemStore interface {
 	ChangeOrderItemStatus(id int) (*HTTPGeneralRes, error)
 	UpdateOrderStatus(id int, status string) error
 	UpdateOrder(oID, price, quantity int) error
+	GetOrderItemByOrderID(orderID int) ([]OrderItem, error)
 }
 
 type OrderItem struct {

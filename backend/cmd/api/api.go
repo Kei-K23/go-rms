@@ -10,6 +10,7 @@ import (
 	"github.com/Kei-K23/go-rms/backend/internal/service/menus"
 	orderitem "github.com/Kei-K23/go-rms/backend/internal/service/orderItem"
 	"github.com/Kei-K23/go-rms/backend/internal/service/orders"
+	"github.com/Kei-K23/go-rms/backend/internal/service/payment"
 	"github.com/Kei-K23/go-rms/backend/internal/service/restaurantTables"
 	"github.com/Kei-K23/go-rms/backend/internal/service/restaurants"
 	"github.com/Kei-K23/go-rms/backend/internal/service/staff"
@@ -17,6 +18,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
+	"github.com/stripe/stripe-go/v76"
 )
 
 type APIServer struct {
@@ -25,6 +27,8 @@ type APIServer struct {
 }
 
 func (s *APIServer) Run() {
+	stripe.Key = "sk_test_51P00dzEVmusSzBDslsV5eCSMZ5C86HGZdt0g45vXX1l8ZxU1SHWTbShL9WrYdrKBJvpjYEFSSnmhr6wWXIF2rZN300KIUAnHb0"
+
 	app := fiber.New()
 	// global middleware
 	app.Use(requestid.New())
@@ -44,6 +48,8 @@ func (s *APIServer) Run() {
 	menuStore := menus.NewStore(s.db)
 	orderItemStore := orderitem.NewStore(s.db)
 	orderStore := orders.NewStore(s.db, orderItemStore)
+	paymentStore := payment.NewStore(s.db)
+
 	// handlers
 	staffHandler := staff.NewHandler(staffStore)
 	authHandler := auth.NewHandler(userStore, authStore)
@@ -54,12 +60,14 @@ func (s *APIServer) Run() {
 	menuHandler := menus.NewHandler(menuStore)
 	orderHandler := orders.NewHandler(orderStore)
 	orderItemHandler := orderitem.NewHandler(orderItemStore)
+	paymentHandler := payment.NewHandler(orderItemStore, paymentStore)
 	// register routes
 	staffHandler.RegisterRoute(v1)
 	authHandler.RegisterRoute(v1)
+	paymentHandler.RegisterRoute(v1)
 
-	protectedRoute := v1.Group("")
 	// protedted route with auth middleware
+	protectedRoute := v1.Group("")
 	protectedRoute.Use(middleware.AuthMiddleware)
 
 	userHandler.RegisterRoute(protectedRoute)

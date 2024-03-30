@@ -31,7 +31,7 @@ func (s *Store) GetOrderItemByID(id int) (*types.OrderItem, error) {
 	return &orderItem, nil
 }
 
-func (s *Store) GetOrderItemByOrderID(orderID int) (*[]types.OrderItem, error) {
+func (s *Store) GetOrderItemByOrderID(orderID int) ([]types.OrderItem, error) {
 	var orderItems []types.OrderItem
 
 	stmt, err := s.db.Prepare("SELECT * FROM order_items WHERE order_id = ?")
@@ -45,12 +45,12 @@ func (s *Store) GetOrderItemByOrderID(orderID int) (*[]types.OrderItem, error) {
 		return nil, fmt.Errorf("no order item found")
 	}
 
-	if result.Next() {
+	for result.Next() {
 		var orderItem types.OrderItem
 		result.Scan(&orderItem.ID, &orderItem.OrderID, &orderItem.MenuID, &orderItem.Quantity, &orderItem.Price, &orderItem.OrderStatus, &orderItem.CreatedAt)
 		orderItems = append(orderItems, orderItem)
 	}
-	return &orderItems, nil
+	return orderItems, nil
 }
 
 func (s *Store) UpdateOrderItem(oiUpdate types.UpdateOrderItem, id int) (*types.OrderItem, error) {
@@ -102,7 +102,7 @@ func (s *Store) ChangeOrderItemStatus(id int) (*types.HTTPGeneralRes, error) {
 	}
 
 	var isAllOrderItemsCompleted bool
-	for _, oi := range *orderitems {
+	for _, oi := range orderitems {
 		if oi.OrderStatus == "completed" {
 			isAllOrderItemsCompleted = true
 		} else {
