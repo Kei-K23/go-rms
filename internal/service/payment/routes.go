@@ -59,7 +59,7 @@ func (h *Handler) checkoutSuccess(c *fiber.Ctx) error {
 }
 
 func (h *Handler) checkoutCancel(c *fiber.Ctx) error {
-	return c.SendString("cancel")
+	return c.SendString("Payment was not successful.")
 }
 
 func (h *Handler) createCheckoutSession(c *fiber.Ctx) error {
@@ -76,22 +76,23 @@ func (h *Handler) createCheckoutSession(c *fiber.Ctx) error {
 	if err != nil {
 		return utils.WriteError(c, http.StatusInternalServerError, err)
 	}
-	fmt.Println(orderItems)
+
 	for _, oi := range orderItems {
 		orderItem := oi
-		fmt.Println(orderItem.Price)
+
+		menuID := strconv.Itoa(orderItem.MenuID)
+
 		stripeLineItem := &stripe.CheckoutSessionLineItemParams{
 			PriceData: &stripe.CheckoutSessionLineItemPriceDataParams{
 				Currency: stripe.String("usd"),
 				ProductData: &stripe.CheckoutSessionLineItemPriceDataProductDataParams{
-					Name: stripe.String(string(orderItem.MenuID)),
+					Name: stripe.String(string(menuID)),
 				},
 				UnitAmount: stripe.Int64(int64(orderItem.Price)),
 			},
 			Quantity: stripe.Int64(int64(orderItem.Quantity)),
 		}
-
-		fmt.Printf("Created line item: %+v\n", stripeLineItem)
+		payload.Amount += oi.Price * oi.Quantity
 		stripeLineItems = append(stripeLineItems, stripeLineItem)
 	}
 

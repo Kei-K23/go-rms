@@ -26,7 +26,7 @@ type Order struct {
 type CreateOrder struct {
 	TableNumber   int         `json:"table_number" validate:"required"`
 	TotalPrice    int         `json:"total_price" validate:"required"`
-	TotalQuantity int         `json:"total_quantity" validate:required`
+	TotalQuantity int         `json:"total_quantity" validate:"required"`
 	OrderTime     string      `json:"order_time"`
 	OrderStatus   OrderStatus `json:"order_status" validate:"required,oneof=pending completed"`
 	RestaurantId  int         `json:"restaurant_id" validate:"required"`

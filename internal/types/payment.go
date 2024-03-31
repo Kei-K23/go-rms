@@ -13,7 +13,7 @@ type Payment struct {
 }
 
 type CreatePayment struct {
-	OrderID     int    `json:"order_id"`
+	OrderID     int    `json:"order_id" validate="required"`
 	Amount      int    `json:"amount"`
 	PaymentType string `json:"payment_type"`
 }

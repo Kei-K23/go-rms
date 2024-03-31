@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/Kei-K23/go-rms/backend/internal/config"
 	"github.com/Kei-K23/go-rms/backend/internal/db/middleware"
 	"github.com/Kei-K23/go-rms/backend/internal/service/auth"
 	"github.com/Kei-K23/go-rms/backend/internal/service/category"
@@ -27,7 +28,7 @@ type APIServer struct {
 }
 
 func (s *APIServer) Run() {
-	stripe.Key = "sk_test_51P00dzEVmusSzBDslsV5eCSMZ5C86HGZdt0g45vXX1l8ZxU1SHWTbShL9WrYdrKBJvpjYEFSSnmhr6wWXIF2rZN300KIUAnHb0"
+	stripe.Key = config.Env.STRIPE_API_KEY
 
 	app := fiber.New()
 	// global middleware
